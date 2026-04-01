@@ -1515,7 +1515,7 @@
         </a>
       </div>
 
-<form action="https://formspree.io/f/proudchikowore@gmail.com" method="POST">
+<form action="https://formspree.io/f/xvzvqlnq" method="POST">
   <div class="contact-form reveal">
     <div class="form-group">
       <label class="form-label">Your Name</label>
@@ -1706,7 +1706,7 @@ const statObserver = new IntersectionObserver((entries) => {
 document.querySelectorAll('.about-stats').forEach(el => statObserver.observe(el));
 
 // ─── CONTACT FORM ─────────────────────────────────────
-const contactForm = document.querySelector('form');
+const contactForm = document.getElementById('my-form');
 
 contactForm.addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -1718,7 +1718,7 @@ contactForm.addEventListener('submit', async (e) => {
   btn.disabled = true;
 
   try {
-    const response = await fetch("https://formspree.io/f/proudchikowore@gmail.com", {
+    const response = await fetch(contactForm.action, {
       method: 'POST',
       body: formData,
       headers: {
@@ -1728,15 +1728,16 @@ contactForm.addEventListener('submit', async (e) => {
 
     if (response.ok) {
       btn.textContent = '✓ MESSAGE SENT!';
-      btn.style.background = '#39FF14'; // Using hex green
+      btn.style.background = '#39FF14'; 
       contactForm.reset();
     } else {
+      // This will now tell you exactly what the server didn't like in the Console
       const data = await response.json();
-      console.error("Server Error:", data);
+      console.error("Formspree Error Details:", data);
       btn.textContent = '❌ SERVER ERROR';
     }
   } catch (error) {
-    console.error("Connection Error:", error); // This will tell us WHY it failed
+    console.error("Connection Error:", error);
     btn.textContent = '❌ CONNECTION ERROR';
   }
 
@@ -1745,7 +1746,9 @@ contactForm.addEventListener('submit', async (e) => {
     btn.style.background = '';
     btn.disabled = false;
   }, 3000);
-});// ─── ACTIVE NAV ───────────────────────────────────────
+});
+  
+  // ─── ACTIVE NAV ───────────────────────────────────────
 const sections = document.querySelectorAll('section[id]');
 const navLinks = document.querySelectorAll('nav ul a');
 window.addEventListener('scroll', () => {
