@@ -1515,21 +1515,24 @@
         </a>
       </div>
 
-      <div class="contact-form reveal">
-        <div class="form-group">
-          <label class="form-label">Your Name</label>
-          <input class="form-input" type="text" placeholder="John Doe">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Email Address</label>
-          <input class="form-input" type="email" placeholder="you@example.com">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Message</label>
-          <textarea class="form-textarea" placeholder="Tell me about your project..."></textarea>
-        </div>
-        <button class="form-submit" onclick="handleSubmit(this)">SEND MESSAGE ▶</button>
-      </div>
+<form action="https://formspree.io/f/proudchikowore@gmail.com" method="POST">
+  <div class="contact-form reveal">
+    <div class="form-group">
+      <label class="form-label">Your Name</label>
+      <input class="form-input" type="text" name="name" placeholder="John Doe" required>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Email Address</label>
+      <input class="form-input" type="email" name="email" placeholder="you@example.com" required>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Message</label>
+      <textarea class="form-textarea" name="message" placeholder="Tell me about your project..." required></textarea>
+    </div>
+    <button class="form-submit" type="submit">SEND MESSAGE ▶</button>
+  </div>
+</form>
+      
     </div>
   </div>
 </section>
@@ -1703,21 +1706,50 @@ const statObserver = new IntersectionObserver((entries) => {
 document.querySelectorAll('.about-stats').forEach(el => statObserver.observe(el));
 
 // ─── CONTACT FORM ─────────────────────────────────────
-function handleSubmit(btn) {
+const contactForm = document.querySelector('form');
+
+contactForm.addEventListener('submit', async (e) => {
+  e.preventDefault(); // Prevent page reload
+  
+  const btn = contactForm.querySelector('.form-submit');
+  const formData = new FormData(contactForm);
+
+  // Start your animation
   btn.textContent = 'SENDING...';
   btn.style.opacity = '0.7';
+  btn.disabled = true;
+
+  try {
+    const response = await fetch(contactForm.action, {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'Accept': 'application/json'
+      }
+    });
+
+    if (response.ok) {
+      // Success animation
+      btn.textContent = '✓ MESSAGE SENT!';
+      btn.style.background = 'var(--green)';
+      btn.style.boxShadow = '0 0 20px rgba(57,255,20,0.4)';
+      contactForm.reset(); // Clear the form
+    } else {
+      btn.textContent = '❌ ERROR';
+    }
+  } catch (error) {
+    btn.textContent = '❌ ERROR';
+  }
+
+  // Reset button state after 3 seconds
   setTimeout(() => {
-    btn.textContent = '✓ MESSAGE SENT!';
-    btn.style.background = 'var(--green)';
-    btn.style.boxShadow = '0 0 20px rgba(57,255,20,0.4)';
-    setTimeout(() => {
-      btn.textContent = 'SEND MESSAGE ▶';
-      btn.style.background = '';
-      btn.style.opacity = '1';
-      btn.style.boxShadow = '';
-    }, 3000);
-  }, 1500);
-}
+    btn.textContent = 'SEND MESSAGE ▶';
+    btn.style.background = '';
+    btn.style.opacity = '1';
+    btn.style.boxShadow = '';
+    btn.disabled = false;
+  }, 3000);
+});
 
 // ─── ACTIVE NAV ───────────────────────────────────────
 const sections = document.querySelectorAll('section[id]');
